@@ -1,0 +1,26 @@
+#!/usr/bin/python2
+
+import smbus
+import time
+import datetime
+
+
+bus = smbus.SMBus(1)
+
+#I2C addres
+address = 0x4d
+ 
+ 
+def get_temp(): 
+	list = []
+	n=2000
+	for i in range(n):
+		data = bus.read_i2c_block_data(address, 1,2)
+		list.append(((data[0] << 8) + data[1])/5.00)
+	avg=reduce(lambda x,y: x+y, list)/len(list)
+	list=filter(lambda x: x>avg, list)
+	val=reduce(lambda x,y: x+y, list)/len(list)
+	return val
+
+
+print get_temp()
